@@ -24,7 +24,7 @@ Bu belge, **Coirendevouz** için fazlara ayrılmış teslimat sırasını tanım
 | # | Çıktı | Not |
 |---|--------|-----|
 | 1.1 | Django projesi, PostgreSQL, temel ayarlar | **Tamamlandı.** [`backend/README.md`](../backend/README.md), `requirements.txt`, `.env.example` — [#2](https://github.com/declarck/coirendevouz-app/issues/2). Ortamlar: dev / staging ayrımı ileride. |
-| 1.2 | Kullanıcı modeli ve roller (müşteri, işletme yöneticisi, istenirse personel) | Django uyumlu auth. |
+| 1.2 | Kullanıcı modeli ve roller (müşteri, işletme yöneticisi, istenirse personel) | **Tamamlandı.** `users.User` — e-posta girişi, `Role`, admin; ayrıntı [`backend/README.md`](../backend/README.md). |
 | 1.3 | İşletme, hizmet, personel, personel–hizmet ilişkisi modelleri | M2M veya `through` tablosu. |
 | 1.4 | Randevu modeli ve çakışma kontrolü | Transaction / `select_for_update` vb. |
 | 1.5 | Çalışma saatleri (işletme / personel) MVP temsil'i | JSON veya tablo; dokümante edilmiş şema. |

@@ -1,6 +1,9 @@
 # Coirendevouz — Backend (Django)
 
-Django tabanlı API projesi. **Faz 1.1:** proje iskeleti, ortam değişkenleri ve PostgreSQL bağlantısı.
+Django tabanlı API projesi.
+
+- **Faz 1.1:** proje iskeleti, ortam değişkenleri, PostgreSQL bağlantısı.
+- **Faz 1.2:** özel kullanıcı modeli (`users.User`), e-posta ile giriş, roller (`customer`, `business_admin`, `staff`), Django admin entegrasyonu.
 
 ## Önkoşullar
 
@@ -28,6 +31,28 @@ PostgreSQL’de veritabanı ve kullanıcı oluşturduktan sonra:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py migrate
+```
+
+### Özel kullanıcı modeli (Faz 1.2)
+
+`AUTH_USER_MODEL = users.User` — giriş **e-posta** ile; alanlar: `full_name`, `phone`, `role`, `created_at`.
+
+**Önemli:** Daha önce varsayılan `auth.User` ile migrate edilmiş bir veritabanınız varsa, `AUTH_USER_MODEL` değişikliğinden sonra şema uyumsuz olur. Geliştirme ortamında veritabanını silip `migrate` ile sıfırdan kurun (PostgreSQL’de DB’yi yeniden oluşturun veya `DROP` + `CREATE`).
+
+### Süper kullanıcı
+
+Etkileşimli:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py createsuperuser
+```
+
+Otomasyon (`--noinput`):
+
+```powershell
+$env:DJANGO_SUPERUSER_PASSWORD="güvenli-parola"
+$env:DJANGO_SUPERUSER_FULL_NAME="Ad Soyad"
+.\.venv\Scripts\python.exe manage.py createsuperuser --noinput --email admin@example.com
 ```
 
 ## Çalıştırma
