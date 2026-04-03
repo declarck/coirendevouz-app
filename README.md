@@ -23,20 +23,17 @@ Kuaför, berber ve güzellik merkezleri için **randevu yönetimi** ve son kulla
 ## Repo yapısı (hedef)
 
 ```text
-backend/         # Django API
-web/             # React (işletme paneli)
-mobile/          # React Native / Expo (müşteri)
-documentation/   # Ürün ve yol haritası
+backend/          # Django API (kurulu — bkz. backend/README.md)
+web/              # React (işletme paneli) — henüz yok
+mobile/           # React Native / Expo (müşteri) — henüz yok
+documentation/    # Ürün ve yol haritası
 ```
-
-Klasörler henüz oluşturulmamış olabilir; ilk kod commit’leriyle birlikte netleşir.
 
 ## Yerel geliştirme
 
-Proje başlangıç aşamasındadır. Backend ve istemci projeleri eklendiğinde bu bölüm `backend/README` ve `web/README` ile genişletilecektir. Önkoşullar özetle:
+**Backend:** [backend/README.md](backend/README.md) — sanal ortam, `requirements.txt`, `.env`, PostgreSQL veya geçici SQLite (`USE_SQLITE=1`).
 
-- Python 3.x, Node.js LTS, PostgreSQL
-- Mobil için Expo CLI (mobil klasörü eklendiğinde)
+Önkoşullar (tüm monorepo için): Python 3.12+, Node.js LTS (ileride web/mobil), PostgreSQL (backend için önerilir).
 
 ## Katkı ve iş akışı
 
