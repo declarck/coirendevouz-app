@@ -56,7 +56,7 @@ body:
     id: docs
     attributes:
       label: İlgili doküman (opsiyonel)
-      description: `documentation/` altındaki dosya veya harici link
-      placeholder: "documentation/API-CONTRACT.md §3"
+      description: "documentation klasöründeki dosya veya harici link"
+      placeholder: "documentation/API-CONTRACT.md"
     validations:
       required: false
