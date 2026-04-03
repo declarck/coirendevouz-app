@@ -17,6 +17,8 @@ Kuaför, berber ve güzellik merkezleri için **randevu yönetimi** ve son kulla
 |--------|--------|
 | [documentation/PROJECT.md](documentation/PROJECT.md) | Vizyon, roller, MVP kapsamı, iş kuralları, teknik çerçeve |
 | [documentation/ROADMAP.md](documentation/ROADMAP.md) | Fazlar, teslimat sırası, çalışma notları |
+| [documentation/DATA-MODEL.md](documentation/DATA-MODEL.md) | Veri modeli taslağı (ER), enum’lar, çalışma saatleri JSON |
+| [documentation/API-CONTRACT.md](documentation/API-CONTRACT.md) | REST API sözleşmesi taslağı ve örnek yükler |
 
 ## Repo yapısı (hedef)
 

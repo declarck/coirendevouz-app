@@ -130,6 +130,8 @@ documentation/
 ## 9. İlgili dokümanlar
 
 - [ROADMAP.md](./ROADMAP.md) — fazlar ve teslimat sırası
+- [DATA-MODEL.md](./DATA-MODEL.md) — varlıklar, alanlar, ER mantığı
+- [API-CONTRACT.md](./API-CONTRACT.md) — REST uçları ve örnek JSON
 - Depo kökündeki [README.md](../README.md) — kısa özet ve yerel geliştirme girişi
 
 ---
