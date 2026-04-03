@@ -41,6 +41,7 @@ Proje başlangıç aşamasındadır. Backend ve istemci projeleri eklendiğinde 
 ## Katkı ve iş akışı
 
 - Görevler GitHub **issue** olarak kaydedilir; geliştirme oturumlarında issue numarası ve kabul kriterleri baz alınır.
+- Yeni issue açarken şablon: [Görev](.github/ISSUE_TEMPLATE/gorev.yml) (özet, alan, kabul kriterleri).
 - Dokümantasyon değişiklikleri `documentation/` altında tutulur.
 
 ## Lisans

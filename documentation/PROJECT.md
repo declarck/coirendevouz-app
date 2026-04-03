@@ -132,6 +132,7 @@ documentation/
 - [ROADMAP.md](./ROADMAP.md) — fazlar ve teslimat sırası
 - [DATA-MODEL.md](./DATA-MODEL.md) — varlıklar, alanlar, ER mantığı
 - [API-CONTRACT.md](./API-CONTRACT.md) — REST uçları ve örnek JSON
+- Issue şablonu: [`.github/ISSUE_TEMPLATE/gorev.yml`](../.github/ISSUE_TEMPLATE/gorev.yml)
 - Depo kökündeki [README.md](../README.md) — kısa özet ve yerel geliştirme girişi
 
 ---

@@ -1,0 +1,62 @@
+name: Görev
+description: Geliştirme maddesi — özet ve kabul kriterleri (gündüz kayıt, akşam uygulama)
+title: "[alan] kısa özet"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Nasıl kullanılır:** Başlıkta `[backend]`, `[web]`, `[mobile]`, `[docs]` gibi bir önek kullanın. Aşağıdaki kabul kriterleri tamamlanmadan issue kapatılmamalı (veya PR’da referans verilmeli).
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Alan
+      description: Öncelikli sorumluluk alanı
+      options:
+        - backend
+        - web
+        - mobile
+        - documentation
+        - infra / repo
+        - ürün / tasarım
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Amaç
+      description: Tek paragrafta ne yapılacak ve neden.
+      placeholder: "Örn.: Müşterinin seçtiği personel ve tarih için müsait slotları dönen endpoint."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Bağlam (opsiyonel)
+      description: İlgili issue numarası, ekran, hata mesajı veya karar notu.
+      placeholder: "İlgili: #12 · API-CONTRACT available-slots bölümü"
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Kabul kriterleri
+      description: Kontrol edilebilir maddeler; mümkünse madde işareti ile yazın.
+      placeholder: |
+        - [ ] GET /api/v1/... parametreleri dokümana uygun
+        - [ ] Aynı personelde çakışan slot dönmez
+        - [ ] Birim testi veya manuel test notu eklendi
+    validations:
+      required: true
+
+  - type: input
+    id: docs
+    attributes:
+      label: İlgili doküman (opsiyonel)
+      description: `documentation/` altındaki dosya veya harici link
+      placeholder: "documentation/API-CONTRACT.md §3"
+    validations:
+      required: false

@@ -11,9 +11,11 @@ Bu belge, **Coirendevouz** için fazlara ayrılmış teslimat sırasını tanım
 | 0.1 | Ürün dokümantasyonu (`PROJECT.md`) ve repo özeti (`README`) | **Tamamlandı.** Tek kaynak; revizyon issue veya PR ile yapılır. |
 | 0.2 | Monorepo klasör iskeleti (`backend/`, `web/`, `mobile/`) | **Tamamlandı.** Boş veya minimal şablon commit’leri. |
 | 0.3 | Veri modeli taslağı (ER mantığı) ve API sözleşmesi taslağı | **Tamamlandı.** [`DATA-MODEL.md`](./DATA-MODEL.md), [`API-CONTRACT.md`](./API-CONTRACT.md) — backend–frontend sözleşmesi. |
-| 0.4 | Issue şablonu (başlık + kabul kriterleri) | Gündüz mobilde kayıt, akşam uygulama akışı için. |
+| 0.4 | Issue şablonu (başlık + kabul kriterleri) | **Tamamlandı.** [`.github/ISSUE_TEMPLATE/gorev.yml`](../.github/ISSUE_TEMPLATE/gorev.yml) — gündüz mobilde kayıt, akşam uygulama akışı için. |
 
 **Çıkış kriteri:** Ekip aynı tabloları ve ana endpoint’leri isimlendirme düzeyinde konuşabiliyor.
+
+**Faz 0 durumu:** 0.1–0.4 tamamlandı; Faz 1’e geçilebilir.
 
 ---
 
