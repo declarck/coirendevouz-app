@@ -157,4 +157,5 @@ Slot ve randevu adımları için veritabanında en az bir işletme, hizmet, pers
 
 - [documentation/DATA-MODEL.md](../documentation/DATA-MODEL.md)
 - [documentation/API-CONTRACT.md](../documentation/API-CONTRACT.md)
+- [documentation/FAZ1-KAPANIS-TESTI.md](../documentation/FAZ1-KAPANIS-TESTI.md) — Faz 1 kapanış (Swagger/Postman: randevu + çakışma)
 - Issue: [#2](https://github.com/declarck/coirendevouz-app/issues/2) (Faz 1.1)

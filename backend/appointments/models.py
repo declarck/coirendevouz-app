@@ -174,5 +174,7 @@ class Appointment(models.Model):
                     Staff.objects.select_for_update().get(pk=self.staff_id)
                 except Staff.DoesNotExist as exc:
                     raise ValidationError(_("Personel bulunamadı.")) from exc
+            # full_clean öncesi alan doğrulaması ends_at ister; süre model.clean'da hesaplanır.
+            self._ensure_ends_at()
             self.full_clean()
             super().save(*args, **kwargs)

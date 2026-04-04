@@ -31,7 +31,7 @@ Bu belge, **Coirendevouz** için fazlara ayrılmış teslimat sırasını tanım
 | 1.6 | DRF ile CRUD + **müsait slot** hesaplama endpoint’i | **Tamamlandı.** `api` uygulaması: JWT (`/api/v1/auth/token/`), kayıt, `GET /api/v1/businesses/`, müsait slot `GET /api/v1/appointments/available-slots/`, randevu `POST /api/v1/appointments/`, `GET /api/v1/appointments/me/`. Ayrıntı [`backend/README.md`](../backend/README.md), [`API-CONTRACT.md`](./API-CONTRACT.md). |
 | 1.7 | OpenAPI / Swagger | **Tamamlandı.** `drf-spectacular` — OpenAPI 3 şema `/api/v1/schema/`, Swagger UI `/api/v1/docs/`, ReDoc `/api/v1/redoc/`. Ayrıntı [`backend/README.md`](../backend/README.md). |
 
-**Çıkış kriteri:** Postman veya eşdeğeri ile randevu oluşturma ve çakışma senaryoları doğrulanır.
+**Çıkış kriteri:** Postman veya eşdeğeri ile randevu oluşturma ve çakışma senaryoları doğrulanır — adım adım: [`FAZ1-KAPANIS-TESTI.md`](./FAZ1-KAPANIS-TESTI.md); demo veri: `python manage.py seed_faz1_kapanis`.
 
 ---
 

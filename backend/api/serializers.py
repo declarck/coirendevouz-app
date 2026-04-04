@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError as DjangoValidationError
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
@@ -114,7 +115,14 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
         validated_data["customer"] = self.context["request"].user
         validated_data["status"] = Appointment.Status.CONFIRMED
         validated_data["source"] = Appointment.Source.CUSTOMER_APP
-        return super().create(validated_data)
+        try:
+            return super().create(validated_data)
+        except DjangoValidationError as exc:
+            if getattr(exc, "message_dict", None):
+                raise serializers.ValidationError(exc.message_dict)
+            raise serializers.ValidationError(
+                list(getattr(exc, "messages", []) or [str(exc)])
+            )
 
 
 class AppointmentReadSerializer(serializers.ModelSerializer):
