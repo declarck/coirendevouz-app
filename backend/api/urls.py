@@ -8,12 +8,14 @@ from .views import (
     AvailableSlotsView,
     BusinessViewSet,
     RegisterView,
+    UserMeView,
 )
 
 router = DefaultRouter()
 router.register(r"businesses", BusinessViewSet, basename="business")
 
 urlpatterns = [
+    path("users/me/", UserMeView.as_view(), name="users-me"),
     path("auth/register/", RegisterView.as_view(), name="auth-register"),
     path("auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

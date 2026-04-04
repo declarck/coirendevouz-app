@@ -26,6 +26,7 @@ from .serializers import (
     BusinessDetailSerializer,
     BusinessListSerializer,
     RegisterSerializer,
+    UserMeSerializer,
 )
 from .slots import compute_available_slots
 
@@ -43,6 +44,15 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
     queryset = get_user_model().objects.all()
+
+
+class UserMeView(APIView):
+    """Oturumdaki kullanıcı — Minimal admin `GET .../users/me/` ile uyumlu gövde."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return Response({"user": UserMeSerializer(request.user).data})
 
 
 class BusinessViewSet(viewsets.ReadOnlyModelViewSet):

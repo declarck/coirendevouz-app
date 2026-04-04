@@ -45,7 +45,11 @@ Tarayıcı: `http://localhost:8001`
 
 Admin uygulamasında `src/lib/axios.ts` tabanı **`CONFIG.serverUrl`** (`VITE_SERVER_URL`) üzerinden alır. Site uygulamasında **`CONFIG.apiBaseUrl`** (`VITE_API_BASE_URL`) kullanılır (Faz 2+ ile axios/fetch bağlanacak).
 
-**CORS:** Tarayıcıdan `localhost:8080` / `8001` → `127.0.0.1:8000` istekleri için Django tarafında `django-cors-headers` (veya eşdeğeri) ve izin verilen origin ayarı gerekir; henüz yoksa entegrasyon sırasında backend’e eklenir.
+**CORS:** Backend’de `django-cors-headers` kullanılır; varsayılan origin’ler `8080` (admin) ve `8001` (site). Özelleştirmek için `backend/.env` içinde `DJANGO_CORS_ALLOWED_ORIGINS` (virgülle ayrı tam URL’ler).
+
+### İşletme paneli girişi (Minimal JWT)
+
+Şablondaki `demo@minimals.cc` **Django veritabanınızda yoktur**; giriş için **`createsuperuser`** veya `role: business_admin` olan bir kullanıcı kullanın (e-posta + şifre). İstekler `VITE_SERVER_URL` (örn. `http://127.0.0.1:8000/api/v1`) üzerinden `POST /auth/token/` ve `GET /users/me/` ile gider.
 
 ## Şablon güncellemesi
 

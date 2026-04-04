@@ -9,6 +9,7 @@ Django tabanlı API projesi.
 - **Faz 1.5:** çalışma saatleri JSON şeması (`DATA-MODEL.md` §4) — `validate_business_working_hours` / `validate_staff_working_hours`, etkin saatler için `resolve_effective_working_hours` / `Staff.get_effective_working_hours()`.
 - **Faz 1.6:** Django REST Framework + SimpleJWT — REST API öneki **`/api/v1/`** (bkz. [`documentation/API-CONTRACT.md`](../documentation/API-CONTRACT.md)).
 - **Faz 1.7:** OpenAPI 3 + **Swagger UI** / ReDoc (`drf-spectacular`).
+- **Frontend (Vite):** `django-cors-headers` — `DJANGO_CORS_ALLOWED_ORIGINS` (bkz. `.env.example`).
 
 ## OpenAPI / Swagger (Faz 1.7)
 
@@ -27,6 +28,7 @@ Django tabanlı API projesi.
 | POST | `/api/v1/auth/register/` | Kayıt (`role`: `customer` vb.) |
 | POST | `/api/v1/auth/token/` | JWT (gövde: `email`, `password`) |
 | POST | `/api/v1/auth/token/refresh/` | Access token yenileme |
+| GET | `/api/v1/users/me/` | Oturumdaki kullanıcı (Bearer; frontend işletme paneli) |
 | GET | `/api/v1/businesses/` | İşletme listesi (`category`, `q`, `lat`+`lng`+`radius_km`) |
 | GET | `/api/v1/businesses/{id}/` | İşletme detayı (hizmetler, personel) |
 | GET | `/api/v1/appointments/available-slots/` | Müsait slotlar (`staff_id`, `service_id`, `date`, isteğe bağlı `slot_minutes`) |

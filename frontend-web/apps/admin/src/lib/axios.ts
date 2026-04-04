@@ -29,7 +29,13 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message = error?.response?.data?.message || error?.message || 'Something went wrong!';
+    const data = error?.response?.data;
+    const detail = data?.detail;
+    const message =
+      (typeof detail === 'string' ? detail : null) ||
+      data?.message ||
+      error?.message ||
+      'Something went wrong!';
     console.error('Axios error:', message);
     return Promise.reject(new Error(message));
   }
@@ -60,10 +66,11 @@ export const endpoints = {
   chat: '/api/chat',
   kanban: '/api/kanban',
   calendar: '/api/calendar',
+  // Django REST: baseURL = VITE_SERVER_URL → /api/v1 (göreli yol, başında / yok)
   auth: {
-    me: '/api/auth/me',
-    signIn: '/api/auth/sign-in',
-    signUp: '/api/auth/sign-up',
+    me: 'users/me/',
+    signIn: 'auth/token/',
+    signUp: 'auth/register/',
   },
   mail: {
     list: '/api/mail/list',

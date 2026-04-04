@@ -23,6 +23,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         return User.objects.create_user(password=password, **validated_data)
 
 
+class UserMeSerializer(serializers.ModelSerializer):
+    """Minimal/Zone şablonları `displayName` / `photoURL` bekleyebilir."""
+
+    displayName = serializers.CharField(source="full_name", read_only=True)
+    photoURL = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ("id", "email", "full_name", "displayName", "phone", "role", "photoURL")
+
+    def get_photoURL(self, obj) -> None:
+        return None
+
+
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
