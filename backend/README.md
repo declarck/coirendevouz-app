@@ -78,6 +78,8 @@ $env:DJANGO_SUPERUSER_FULL_NAME="Ad Soyad"
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
+Tarayıcıda **`http://127.0.0.1:8000/`** kök adresinde kısa bir karşılama sayfası (API ve admin bağlantıları) görünür; JSON API uçları **`/api/v1/...`** altındadır.
+
 ### Hızlı smoke test (PowerShell)
 
 Sunucu `http://127.0.0.1:8000` iken; PowerShell’de gerçek `curl` için **`curl.exe`** kullanın (aksi halde `curl` `Invoke-WebRequest` alias’ına gidebilir).
