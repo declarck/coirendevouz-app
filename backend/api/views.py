@@ -5,6 +5,8 @@ from math import asin, cos, radians, sin, sqrt
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.models import Q
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -20,6 +22,7 @@ from .serializers import (
     AppointmentCreateResponseSerializer,
     AppointmentCreateSerializer,
     AppointmentReadSerializer,
+    AvailableSlotsResponseSerializer,
     BusinessDetailSerializer,
     BusinessListSerializer,
     RegisterSerializer,
@@ -91,6 +94,36 @@ class BusinessViewSet(viewsets.ReadOnlyModelViewSet):
         return qs
 
 
+@extend_schema(
+    summary="Müsait slotlar",
+    parameters=[
+        OpenApiParameter(
+            "staff_id",
+            OpenApiTypes.INT,
+            OpenApiParameter.QUERY,
+            required=True,
+        ),
+        OpenApiParameter(
+            "service_id",
+            OpenApiTypes.INT,
+            OpenApiParameter.QUERY,
+            required=True,
+        ),
+        OpenApiParameter(
+            "date",
+            OpenApiTypes.DATE,
+            OpenApiParameter.QUERY,
+            required=True,
+        ),
+        OpenApiParameter(
+            "slot_minutes",
+            OpenApiTypes.INT,
+            OpenApiParameter.QUERY,
+            required=False,
+        ),
+    ],
+    responses={200: AvailableSlotsResponseSerializer},
+)
 class AvailableSlotsView(APIView):
     permission_classes = [AllowAny]
 

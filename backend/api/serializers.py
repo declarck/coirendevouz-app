@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.contrib.auth import get_user_model
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from appointments.models import Appointment
@@ -34,6 +35,7 @@ class StaffSerializer(serializers.ModelSerializer):
         model = Staff
         fields = ("id", "display_name", "is_active", "service_ids")
 
+    @extend_schema_field({"type": "array", "items": {"type": "integer"}})
     def get_service_ids(self, obj: Staff) -> list[int]:
         return list(
             StaffService.objects.filter(
@@ -82,10 +84,12 @@ class BusinessDetailSerializer(serializers.ModelSerializer):
             "staff",
         )
 
+    @extend_schema_field(ServiceSerializer(many=True))
     def get_services(self, obj: Business):
         qs = obj.services.filter(is_active=True)
         return ServiceSerializer(qs, many=True).data
 
+    @extend_schema_field(StaffSerializer(many=True))
     def get_staff(self, obj: Business):
         qs = obj.staff_members.filter(is_active=True)
         return StaffSerializer(qs, many=True).data
@@ -132,6 +136,19 @@ class AppointmentReadSerializer(serializers.ModelSerializer):
             "customer_note",
             "created_at",
         )
+
+
+class SlotItemSerializer(serializers.Serializer):
+    starts_at = serializers.DateTimeField()
+    ends_at = serializers.DateTimeField()
+
+
+class AvailableSlotsResponseSerializer(serializers.Serializer):
+    staff_id = serializers.IntegerField()
+    service_id = serializers.IntegerField()
+    date = serializers.DateField()
+    slot_minutes = serializers.IntegerField()
+    slots = SlotItemSerializer(many=True)
 
 
 class AppointmentCreateResponseSerializer(serializers.ModelSerializer):

@@ -8,6 +8,17 @@ Django tabanlı API projesi.
 - **Faz 1.4:** randevu modeli (`appointments`), iptal dışı çakışma kontrolü, kayıtta personel satır kilidi.
 - **Faz 1.5:** çalışma saatleri JSON şeması (`DATA-MODEL.md` §4) — `validate_business_working_hours` / `validate_staff_working_hours`, etkin saatler için `resolve_effective_working_hours` / `Staff.get_effective_working_hours()`.
 - **Faz 1.6:** Django REST Framework + SimpleJWT — REST API öneki **`/api/v1/`** (bkz. [`documentation/API-CONTRACT.md`](../documentation/API-CONTRACT.md)).
+- **Faz 1.7:** OpenAPI 3 + **Swagger UI** / ReDoc (`drf-spectacular`).
+
+## OpenAPI / Swagger (Faz 1.7)
+
+| Adres | Açıklama |
+|--------|----------|
+| `/api/v1/docs/` | **Swagger UI** — uçları deneme, JWT için **Authorize** (Bearer) |
+| `/api/v1/redoc/` | ReDoc |
+| `/api/v1/schema/` | OpenAPI 3 YAML/JSON şema |
+
+Şema doğrulama (CI veya yerel): `python manage.py spectacular --validate --fail-on-warn` (Windows’ta konsol UTF-8 için `PYTHONUTF8=1` kullanmak Türkçe açıklamalarda güvenlidir).
 
 ## REST API (Faz 1.6)
 
