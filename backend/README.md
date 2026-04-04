@@ -7,6 +7,20 @@ Django tabanlı API projesi.
 - **Faz 1.3:** işletme, hizmet, personel, personel–hizmet (`business` uygulaması); admin’de yönetilebilir.
 - **Faz 1.4:** randevu modeli (`appointments`), iptal dışı çakışma kontrolü, kayıtta personel satır kilidi.
 - **Faz 1.5:** çalışma saatleri JSON şeması (`DATA-MODEL.md` §4) — `validate_business_working_hours` / `validate_staff_working_hours`, etkin saatler için `resolve_effective_working_hours` / `Staff.get_effective_working_hours()`.
+- **Faz 1.6:** Django REST Framework + SimpleJWT — REST API öneki **`/api/v1/`** (bkz. [`documentation/API-CONTRACT.md`](../documentation/API-CONTRACT.md)).
+
+## REST API (Faz 1.6)
+
+| Method | Path | Açıklama |
+|--------|------|----------|
+| POST | `/api/v1/auth/register/` | Kayıt (`role`: `customer` vb.) |
+| POST | `/api/v1/auth/token/` | JWT (gövde: `email`, `password`) |
+| POST | `/api/v1/auth/token/refresh/` | Access token yenileme |
+| GET | `/api/v1/businesses/` | İşletme listesi (`category`, `q`, `lat`+`lng`+`radius_km`) |
+| GET | `/api/v1/businesses/{id}/` | İşletme detayı (hizmetler, personel) |
+| GET | `/api/v1/appointments/available-slots/` | Müsait slotlar (`staff_id`, `service_id`, `date`, isteğe bağlı `slot_minutes`) |
+| POST | `/api/v1/appointments/` | Randevu oluşturma (Bearer; müşteri) |
+| GET | `/api/v1/appointments/me/` | Oturumdaki müşterinin randevuları (`status` filtresi) |
 
 ## Önkoşullar
 

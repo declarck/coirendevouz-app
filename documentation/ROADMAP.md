@@ -28,7 +28,7 @@ Bu belge, **Coirendevouz** için fazlara ayrılmış teslimat sırasını tanım
 | 1.3 | İşletme, hizmet, personel, personel–hizmet ilişkisi modelleri | **Tamamlandı.** `business` uygulaması: `Business`, `Service`, `Staff`, `StaffService` (M2M `through`). |
 | 1.4 | Randevu modeli ve çakışma kontrolü | **Tamamlandı.** `appointments.Appointment` — `clean` ile kesişim; `save` içinde `transaction.atomic` + `select_for_update` (personel kilidi). |
 | 1.5 | Çalışma saatleri (işletme / personel) MVP temsil'i | **Tamamlandı.** `business/working_hours.py` — §4 şema doğrulaması; `Staff.get_effective_working_hours()`. |
-| 1.6 | DRF ile CRUD + **müsait slot** hesaplama endpoint’i | En kritik iş mantığı. |
+| 1.6 | DRF ile CRUD + **müsait slot** hesaplama endpoint’i | **Tamamlandı.** `api` uygulaması: JWT (`/api/v1/auth/token/`), kayıt, `GET /api/v1/businesses/`, müsait slot `GET /api/v1/appointments/available-slots/`, randevu `POST /api/v1/appointments/`, `GET /api/v1/appointments/me/`. Ayrıntı [`backend/README.md`](../backend/README.md), [`API-CONTRACT.md`](./API-CONTRACT.md). |
 | 1.7 | OpenAPI / Swagger | Frontend ve test için. |
 
 **Çıkış kriteri:** Postman veya eşdeğeri ile randevu oluşturma ve çakışma senaryoları doğrulanır.
