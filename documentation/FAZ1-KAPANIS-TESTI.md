@@ -6,6 +6,20 @@
 
 ---
 
+## Otomatik test (pytest değil — Django `TestCase`)
+
+Aynı senaryo kodla da doğrulanır; test veritabanı ayrıdır (kalıcı DB’yi silmez):
+
+```powershell
+cd backend
+$env:USE_SQLITE="1"   # isteğe bağlı; yoksa .env’deki DB kullanılır
+.\.venv\Scripts\python.exe manage.py test api.tests.test_faz1_kapanis_e2e -v 2
+```
+
+**Beklenen:** `Ran 1 test ... OK` — kayıt, token, slotlar, `201` + çakışmada `400`, `appointments/me` listesi.
+
+---
+
 ## Adım 0 — Demo veriyi yükle (önerilir)
 
 Tek seferlik demo işletme, hizmet, personel ve personel–hizmet eşlemesi:
