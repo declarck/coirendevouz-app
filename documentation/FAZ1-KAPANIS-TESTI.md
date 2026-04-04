@@ -18,6 +18,8 @@ $env:USE_SQLITE="1"   # isteğe bağlı; yoksa .env’deki DB kullanılır
 
 **Beklenen:** `Ran 1 test ... OK` — kayıt, token, slotlar, `201` + çakışmada `400`, `appointments/me` listesi.
 
+Ayrıntılı sıra ve örnek konsol çıktısı: [`FAZ1-KAPANIS-TEST-SONUCU.md`](./FAZ1-KAPANIS-TEST-SONUCU.md).
+
 ---
 
 ## Adım 0 — Demo veriyi yükle (önerilir)
