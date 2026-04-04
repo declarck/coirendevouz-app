@@ -20,13 +20,13 @@ Kuaför, berber ve güzellik merkezleri için **randevu yönetimi** ve son kulla
 | [documentation/DATA-MODEL.md](documentation/DATA-MODEL.md) | Veri modeli taslağı (ER), enum’lar, çalışma saatleri JSON |
 | [documentation/API-CONTRACT.md](documentation/API-CONTRACT.md) | REST API sözleşmesi taslağı ve örnek yükler |
 
-## Repo yapısı (hedef)
+## Repo yapısı
 
 ```text
-backend/          # Django API (kurulu — bkz. backend/README.md)
-web/              # React (işletme paneli) — henüz yok
+backend/          # Django API (bkz. backend/README.md)
+frontend-web/     # React + TS — işletme paneli + müşteri sitesi (bkz. frontend-web/README.md)
+documentation/  # Ürün ve yol haritası
 mobile/           # React Native / Expo (müşteri) — henüz yok
-documentation/    # Ürün ve yol haritası
 ```
 
 ## Yerel geliştirme

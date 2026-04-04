@@ -39,7 +39,7 @@ Bu belge, **Coirendevouz** için fazlara ayrılmış teslimat sırasını tanım
 
 | # | Çıktı | Not |
 |---|--------|-----|
-| 2.1 | React + TS proje iskeleti, API istemcisi, auth akışı | Token saklama güvenliği. |
+| 2.1 | React + TS proje iskeleti, API istemcisi, auth akışı | **Devam ediyor.** [`frontend-web/README.md`](../frontend-web/README.md) — Minimal → `apps/admin` (8080), Zone → `apps/site` (8001); şablonlar `frontend-web/templates/`. Token saklama güvenliği Faz 2.2+. |
 | 2.2 | Giriş / kayıt (işletme tarafı) | MVP kapsamına göre sadeleştirilir. |
 | 2.3 | Ajanda görünümü (gün/hafta) | Liste takvimi ile başlanabilir. |
 | 2.4 | Personel ve hizmet yönetimi ekranları | Form doğrulamaları. |
