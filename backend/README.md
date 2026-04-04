@@ -78,6 +78,63 @@ $env:DJANGO_SUPERUSER_FULL_NAME="Ad Soyad"
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
+### Hızlı smoke test (PowerShell)
+
+Sunucu `http://127.0.0.1:8000` iken; PowerShell’de gerçek `curl` için **`curl.exe`** kullanın (aksi halde `curl` `Invoke-WebRequest` alias’ına gidebilir).
+
+**1) Müşteri kaydı**
+
+```powershell
+curl.exe -s -X POST "http://127.0.0.1:8000/api/v1/auth/register/" `
+  -H "Content-Type: application/json" `
+  -d "{\"email\":\"musteri@ornek.com\",\"password\":\"parola12345\",\"full_name\":\"Test Musteri\",\"phone\":\"+905551112233\",\"role\":\"customer\"}"
+```
+
+**2) JWT al (gövde alanı: `email`, `password`)**
+
+```powershell
+curl.exe -s -X POST "http://127.0.0.1:8000/api/v1/auth/token/" `
+  -H "Content-Type: application/json" `
+  -d "{\"email\":\"musteri@ornek.com\",\"password\":\"parola12345\"}"
+```
+
+Yanıttaki `access` değerini bir değişkene alıp sonraki isteklerde kullanın:
+
+```powershell
+$token = "<access_jwt_buraya>"
+```
+
+**3) İşletme listesi / detay**
+
+```powershell
+curl.exe -s "http://127.0.0.1:8000/api/v1/businesses/"
+curl.exe -s "http://127.0.0.1:8000/api/v1/businesses/1/"
+```
+
+**4) Müsait slotlar** — Admin’de veya detay yanıtından geçerli `staff_id`, `service_id` ve `YYYY-MM-DD` tarihi kullanın:
+
+```powershell
+curl.exe -s "http://127.0.0.1:8000/api/v1/appointments/available-slots/?staff_id=1&service_id=1&date=2026-04-15"
+```
+
+**5) Randevu oluştur** — `starts_at` ISO 8601 (timezone ile); `business`, `staff`, `service` ilgili işletmeye ait PK’lar olmalı:
+
+```powershell
+curl.exe -s -X POST "http://127.0.0.1:8000/api/v1/appointments/" `
+  -H "Content-Type: application/json" `
+  -H "Authorization: Bearer $token" `
+  -d "{\"business\":1,\"staff\":1,\"service\":1,\"starts_at\":\"2026-04-15T09:00:00+03:00\",\"customer_note\":\"Test\"}"
+```
+
+**6) Kendi randevularım**
+
+```powershell
+curl.exe -s "http://127.0.0.1:8000/api/v1/appointments/me/" `
+  -H "Authorization: Bearer $token"
+```
+
+Slot ve randevu adımları için veritabanında en az bir işletme, hizmet, personel, personel–hizmet eşlemesi ve geçerli `working_hours` gerekir; yoksa önce **`/admin`** veya veri yüklemesi ile örnek kayıt oluşturun.
+
 ## Sorun giderme
 
 - `ImproperlyConfigured: Veritabanı ayarlanmadı` → `.env` içinde `POSTGRES_*` veya `DATABASE_URL` tanımlayın; ya da yerel deneme için `USE_SQLITE=1`.
