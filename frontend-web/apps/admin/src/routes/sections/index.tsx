@@ -1,55 +1,46 @@
 import type { RouteObject } from 'react-router';
 
 import { lazy, Suspense } from 'react';
+import { Navigate } from 'react-router';
 
-import { MainLayout } from 'src/layouts/main';
+import { paths } from 'src/routes/paths';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
 import { authRoutes } from './auth';
 import { mainRoutes } from './main';
-import { authDemoRoutes } from './auth-demo';
 import { dashboardRoutes } from './dashboard';
-import { componentsRoutes } from './components';
 
 // ----------------------------------------------------------------------
 
-const HomePage = lazy(() => import('src/pages/home'));
 const Page404 = lazy(() => import('src/pages/error/404'));
 
 export const routesSection: RouteObject[] = [
   {
     path: '/',
-    /**
-     * @skip homepage
-     * import { Navigate } from "react-router";
-     * import { CONFIG } from 'src/global-config';
-     *
-     * element: <Navigate to={CONFIG.auth.redirectPath} replace />,
-     * and remove the element below:
-     */
     element: (
       <Suspense fallback={<SplashScreen />}>
-        <MainLayout>
-          <HomePage />
-        </MainLayout>
+        <Navigate to={paths.dashboard.root} replace />
       </Suspense>
     ),
   },
 
   // Auth
   ...authRoutes,
-  ...authDemoRoutes,
 
   // Dashboard
   ...dashboardRoutes,
 
-  // Main
+  // Main (error sayfaları vb.)
   ...mainRoutes,
 
-  // Components
-  ...componentsRoutes,
-
   // No match
-  { path: '*', element: <Page404 /> },
+  {
+    path: '*',
+    element: (
+      <Suspense fallback={<SplashScreen />}>
+        <Page404 />
+      </Suspense>
+    ),
+  },
 ];

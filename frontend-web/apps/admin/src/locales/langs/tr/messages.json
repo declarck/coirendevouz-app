@@ -1,0 +1,7 @@
+{
+  "languageSwitch": {
+    "success": "Dil değiştirildi.",
+    "error": "Dil değiştirilemedi.",
+    "loading": "Yükleniyor…"
+  }
+}

@@ -1,8 +1,17 @@
-import type { AxiosRequestConfig } from 'axios';
+import type { AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 
 import axios from 'axios';
 
 import { CONFIG } from 'src/global-config';
+
+import { messageFromResponseData } from './api-errors';
+import {
+  getAccessToken,
+  getRefreshToken,
+  clearStoredTokens,
+  setStoredAccessToken,
+  setStoredRefreshToken,
+} from './auth-session';
 
 // ----------------------------------------------------------------------
 
@@ -13,31 +22,90 @@ const axiosInstance = axios.create({
   },
 });
 
-/**
- * Optional: Add token (if using auth)
- *
- axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+/** Refresh isteğinde sonsuz döngüyü engeller. */
+function isAuthRefreshRequest(config: AxiosRequestConfig): boolean {
+  const url = config.url ?? '';
+  return url.includes('auth/token/refresh/');
+}
+
+axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const token = getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    delete config.headers.Authorization;
   }
   return config;
 });
-*
-*/
+
+let refreshPromise: Promise<string> | null = null;
+
+async function refreshAccessToken(): Promise<string> {
+  const refresh = getRefreshToken();
+  if (!refresh) {
+    throw new Error('Oturum süresi doldu; lütfen yeniden giriş yapın.');
+  }
+
+  if (!refreshPromise) {
+    refreshPromise = axios
+      .post<{ access: string; refresh?: string }>(
+        `${CONFIG.serverUrl.replace(/\/$/, '')}/auth/token/refresh/`,
+        { refresh },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+      .then((res) => {
+        const { access, refresh: newRefresh } = res.data;
+        if (!access) {
+          throw new Error('Yeni access token alınamadı.');
+        }
+        setStoredAccessToken(access);
+        if (newRefresh) {
+          setStoredRefreshToken(newRefresh);
+        }
+        axiosInstance.defaults.headers.common.Authorization = `Bearer ${access}`;
+        return access;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+}
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
-    const data = error?.response?.data;
-    const detail = data?.detail;
-    const message =
-      (typeof detail === 'string' ? detail : null) ||
-      data?.message ||
-      error?.message ||
-      'Something went wrong!';
-    console.error('Axios error:', message);
-    return Promise.reject(new Error(message));
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
+    const status = error.response?.status;
+    const data = error.response?.data;
+
+    if (
+      status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !isAuthRefreshRequest(originalRequest) &&
+      getRefreshToken()
+    ) {
+      originalRequest._retry = true;
+      try {
+        const newAccess = await refreshAccessToken();
+        originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+        return axiosInstance(originalRequest);
+      } catch {
+        clearStoredTokens();
+        delete axiosInstance.defaults.headers.common.Authorization;
+        const msg = messageFromResponseData(data) || 'Oturum süresi doldu; lütfen yeniden giriş yapın.';
+        return Promise.reject(new Error(msg));
+      }
+    }
+
+    const msg = messageFromResponseData(data) || error.message || 'Bir hata oluştu.';
+    console.error('Axios error:', msg);
+    return Promise.reject(new Error(msg));
   }
 );
 
@@ -66,11 +134,14 @@ export const endpoints = {
   chat: '/api/chat',
   kanban: '/api/kanban',
   calendar: '/api/calendar',
-  // Django REST: baseURL = VITE_SERVER_URL → /api/v1 (göreli yol, başında / yok)
   auth: {
     me: 'users/me/',
     signIn: 'auth/token/',
     signUp: 'auth/register/',
+    refresh: 'auth/token/refresh/',
+  },
+  business: {
+    mine: 'businesses/mine/',
   },
   mail: {
     list: '/api/mail/list',
@@ -89,3 +160,5 @@ export const endpoints = {
     search: '/api/product/search',
   },
 } as const;
+
+export { getApiErrorMessage } from './api-errors';

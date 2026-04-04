@@ -38,7 +38,7 @@ export const SignUpSchema = zod.object({
   password: zod
     .string()
     .min(1, { message: 'Password is required!' })
-    .min(6, { message: 'Password must be at least 6 characters!' }),
+    .min(8, { message: 'Password must be at least 8 characters!' }),
 });
 
 // ----------------------------------------------------------------------
@@ -109,7 +109,7 @@ export function JwtSignUpView() {
       <Field.Text
         name="password"
         label="Password"
-        placeholder="6+ characters"
+        placeholder="8+ characters"
         type={showPassword.value ? 'text' : 'password'}
         slotProps={{
           inputLabel: { shrink: true },

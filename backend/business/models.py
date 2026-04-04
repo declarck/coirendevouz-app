@@ -150,6 +150,16 @@ class Staff(models.Model):
         blank=True,
         help_text=_("Boşsa işletme saatleri geçerlidir."),
     )
+    working_hours_exceptions = models.JSONField(
+        _("çalışma saati istisnaları"),
+        null=True,
+        blank=True,
+        default=list,
+        help_text=_(
+            "Belirli tarihlerde izin veya farklı saat (YYYY-MM-DD). "
+            "Haftalık şablonu geçersiz kılar."
+        ),
+    )
     is_active = models.BooleanField(_("aktif"), default=True, db_index=True)
     services = models.ManyToManyField(
         Service,
@@ -168,9 +178,13 @@ class Staff(models.Model):
 
     def clean(self):
         super().clean()
-        from .working_hours import validate_staff_working_hours
+        from .working_hours import (
+            validate_staff_working_hours,
+            validate_staff_working_hours_exceptions,
+        )
 
         validate_staff_working_hours(self.working_hours)
+        validate_staff_working_hours_exceptions(self.working_hours_exceptions)
 
     def get_effective_working_hours(self) -> dict:
         from .working_hours import resolve_effective_working_hours

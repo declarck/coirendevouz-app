@@ -1,7 +1,6 @@
 import axios, { endpoints } from 'src/lib/axios';
 
 import { setSession } from './utils';
-import { JWT_STORAGE_KEY } from './constant';
 
 // ----------------------------------------------------------------------
 
@@ -17,6 +16,15 @@ export type SignUpParams = {
   lastName: string;
 };
 
+/** Django `RegisterSerializer` ile uyumlu; kayıt JWT dönmez — ardından giriş yapılır. */
+export type RegisterAccountParams = {
+  email: string;
+  password: string;
+  full_name: string;
+  phone: string;
+  role: 'customer' | 'business_admin' | 'staff';
+};
+
 /** **************************************
  * Sign in
  *************************************** */
@@ -27,12 +35,13 @@ export const signInWithPassword = async ({ email, password }: SignInParams): Pro
     const res = await axios.post(endpoints.auth.signIn, params);
 
     const accessToken = res.data.access ?? res.data.accessToken;
+    const refreshToken = res.data.refresh as string | undefined;
 
     if (!accessToken) {
       throw new Error('Access token not found in response');
     }
 
-    setSession(accessToken);
+    await setSession(accessToken, refreshToken ?? null);
   } catch (error) {
     console.error('Error during sign in:', error);
     throw error;
@@ -40,7 +49,26 @@ export const signInWithPassword = async ({ email, password }: SignInParams): Pro
 };
 
 /** **************************************
- * Sign up
+ * Register (herhangi bir rol) + oturum aç
+ *************************************** */
+export const registerAccount = async (params: RegisterAccountParams): Promise<void> => {
+  try {
+    await axios.post(endpoints.auth.signUp, {
+      email: params.email,
+      password: params.password,
+      full_name: params.full_name,
+      phone: params.phone,
+      role: params.role,
+    });
+    await signInWithPassword({ email: params.email, password: params.password });
+  } catch (error) {
+    console.error('Error during register:', error);
+    throw error;
+  }
+};
+
+/** **************************************
+ * Sign up (müşteri — ad/soyad birleştirilir)
  *************************************** */
 export const signUp = async ({
   email,
@@ -48,27 +76,14 @@ export const signUp = async ({
   firstName,
   lastName,
 }: SignUpParams): Promise<void> => {
-  const params = {
+  const full_name = `${firstName} ${lastName}`.trim();
+  await registerAccount({
     email,
     password,
-    firstName,
-    lastName,
-  };
-
-  try {
-    const res = await axios.post(endpoints.auth.signUp, params);
-
-    const accessToken = res.data.access ?? res.data.accessToken;
-
-    if (!accessToken) {
-      throw new Error('Access token not found in response');
-    }
-
-    sessionStorage.setItem(JWT_STORAGE_KEY, accessToken);
-  } catch (error) {
-    console.error('Error during sign up:', error);
-    throw error;
-  }
+    full_name: full_name || email,
+    phone: '',
+    role: 'customer',
+  });
 };
 
 /** **************************************

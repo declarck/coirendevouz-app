@@ -9,7 +9,22 @@ Django tabanlı API projesi.
 - **Faz 1.5:** çalışma saatleri JSON şeması (`DATA-MODEL.md` §4) — `validate_business_working_hours` / `validate_staff_working_hours`, etkin saatler için `resolve_effective_working_hours` / `Staff.get_effective_working_hours()`.
 - **Faz 1.6:** Django REST Framework + SimpleJWT — REST API öneki **`/api/v1/`** (bkz. [`documentation/API-CONTRACT.md`](../documentation/API-CONTRACT.md)).
 - **Faz 1.7:** OpenAPI 3 + **Swagger UI** / ReDoc (`drf-spectacular`).
+- **Faz 2 (işletme paneli API):** A.1–A.9 uçları; şema doğrulaması `2-BE-10` ile `spectacular --validate --fail-on-warn` (uyarısız).
 - **Frontend (Vite):** `django-cors-headers` — `DJANGO_CORS_ALLOWED_ORIGINS` (bkz. `.env.example`).
+
+### Yerel panel testi — `declarck@gmail.com` mock veri
+
+`declarck@gmail.com` kullanıcısı veritabanında varsa (örn. `createsuperuser`):
+
+```powershell
+python manage.py seed_declarck_demo
+# veya giriş yaptığınız e-posta ile işletme sahibi ataması:
+python manage.py seed_declarck_demo --owner-email sizin@eposta.com
+```
+
+İşletme (**Coirendevouz Demo Salon**), **7 hizmet**, **8 personel**, **8 demo müşteri** (`demo.musteri.01@` … `@coirendevouz.local`, ortak şifre: `DemoMusteri2026!`), geçmiş + gelecek iş günlerine yayılmış **çok sayıda** randevu oluşturur veya günceller. Randevular `internal_note` içinde `[seed_declarck_demo]` ile işaretlenir; komut tekrar çalıştırıldığında bu randevular silinip yeniden yazılır.
+
+**Süper kullanıcı:** `GET /businesses/mine/` tüm aktif işletmeleri döndürür; panelde en az bir işletme varsa “Bağlı işletme yok” oluşmaz. İşletme yoksa yukarıdaki seed veya Django Admin ile `Business` oluşturun.
 
 ## OpenAPI / Swagger (Faz 1.7)
 
@@ -29,11 +44,21 @@ Django tabanlı API projesi.
 | POST | `/api/v1/auth/token/` | JWT (gövde: `email`, `password`) |
 | POST | `/api/v1/auth/token/refresh/` | Access token yenileme |
 | GET | `/api/v1/users/me/` | Oturumdaki kullanıcı (Bearer; frontend işletme paneli) |
+| PATCH | `/api/v1/users/me/` | Profil — `full_name`, `phone` |
 | GET | `/api/v1/businesses/` | İşletme listesi (`category`, `q`, `lat`+`lng`+`radius_km`) |
+| GET | `/api/v1/businesses/mine/` | Oturumdaki kullanıcının yönettiği / personel olduğu işletmeler (`business_admin` veya `staff`) |
+| GET | `/api/v1/businesses/{business_id}/schedule/` | Ajanda (`from`, `to` = `YYYY-MM-DD`; isteğe bağlı `status`, `staff_id` tekrarlı veya virgüllü — bkz. `documentation/API-CONTRACT.md` §5.1) |
+| POST | `/api/v1/businesses/{business_id}/appointments/manual/` | Manuel randevu (müşteri kullanıcı PK, personel–hizmet uyumu) |
 | GET | `/api/v1/businesses/{id}/` | İşletme detayı (hizmetler, personel) |
+| GET, POST | `/api/v1/businesses/{business_id}/services/` | İşletme hizmetleri listesi / oluşturma (işletme üyesi) |
+| GET, PUT, PATCH, DELETE | `/api/v1/businesses/{business_id}/services/{id}/` | Hizmet detay / tam veya kısmi güncelle / pasifleştir (`DELETE` = soft) |
+| GET, POST | `/api/v1/businesses/{business_id}/staff/` | Personel listesi / oluşturma (işletme üyesi) |
+| GET, PUT, PATCH, DELETE | `/api/v1/businesses/{business_id}/staff/{id}/` | Personel detay / tam veya kısmi güncelle / pasifleştir (`DELETE` = soft) |
+| PUT | `/api/v1/businesses/{business_id}/staff/{staff_id}/services/` | Personel–hizmet ataması (`service_ids` tam küme) |
 | GET | `/api/v1/appointments/available-slots/` | Müsait slotlar (`staff_id`, `service_id`, `date`, isteğe bağlı `slot_minutes`) |
 | POST | `/api/v1/appointments/` | Randevu oluşturma (Bearer; müşteri) |
 | GET | `/api/v1/appointments/me/` | Oturumdaki müşterinin randevuları (`status` filtresi) |
+| PATCH | `/api/v1/appointments/{id}/` | Randevu güncelleme — işletme (`status`, `internal_note`) |
 
 ## Önkoşullar
 

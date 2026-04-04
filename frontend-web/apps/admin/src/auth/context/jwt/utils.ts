@@ -1,6 +1,8 @@
 import { paths } from 'src/routes/paths';
 
 import axios from 'src/lib/axios';
+import { setStoredBusinessId } from 'src/lib/business-session';
+import { clearStoredTokens, setStoredRefreshToken } from 'src/lib/auth-session';
 
 import { JWT_STORAGE_KEY } from './constant';
 
@@ -58,7 +60,7 @@ export function tokenExpired(exp: number) {
   setTimeout(() => {
     try {
       alert('Token expired!');
-      sessionStorage.removeItem(JWT_STORAGE_KEY);
+      clearStoredTokens();
       window.location.href = paths.auth.jwt.signIn;
     } catch (error) {
       console.error('Error during token expiration:', error);
@@ -69,14 +71,21 @@ export function tokenExpired(exp: number) {
 
 // ----------------------------------------------------------------------
 
-export async function setSession(accessToken: string | null) {
+export async function setSession(
+  accessToken: string | null,
+  refreshToken?: string | null
+) {
   try {
     if (accessToken) {
       sessionStorage.setItem(JWT_STORAGE_KEY, accessToken);
 
+      if (refreshToken !== undefined) {
+        setStoredRefreshToken(refreshToken);
+      }
+
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-      const decodedToken = jwtDecode(accessToken); // ~3 days by minimals server
+      const decodedToken = jwtDecode(accessToken);
 
       if (decodedToken && 'exp' in decodedToken) {
         tokenExpired(decodedToken.exp);
@@ -84,7 +93,8 @@ export async function setSession(accessToken: string | null) {
         throw new Error('Invalid access token!');
       }
     } else {
-      sessionStorage.removeItem(JWT_STORAGE_KEY);
+      clearStoredTokens();
+      setStoredBusinessId(null);
       delete axios.defaults.headers.common.Authorization;
     }
   } catch (error) {

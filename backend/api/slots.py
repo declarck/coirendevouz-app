@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from appointments.models import Appointment
 from business.models import Service, Staff, StaffService
-from business.working_hours import WEEKDAYS, resolve_effective_working_hours
+from business.working_hours import get_staff_day_config_for_date
 
 
 def _effective_duration_minutes(staff: Staff, service: Service) -> int:
@@ -148,9 +148,7 @@ def compute_available_slots(
     except Exception as exc:
         raise ValidationError(_("Geçersiz saat dilimi.")) from exc
 
-    hours = resolve_effective_working_hours(staff)
-    wkey = WEEKDAYS[day.weekday()]
-    day_cfg = hours.get(wkey)
+    day_cfg = get_staff_day_config_for_date(staff, day)
 
     day_start = dt.datetime.combine(day, dt.time.min, tzinfo=tz)
     day_end = day_start + dt.timedelta(days=1)

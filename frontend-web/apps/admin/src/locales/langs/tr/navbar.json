@@ -1,0 +1,12 @@
+{
+  "app": "Uygulama",
+  "job": "İş",
+  "user": "Kullanıcı",
+  "travel": "Seyahat",
+  "invoice": "Fatura",
+  "blog": {
+    "title": "Blog",
+    "caption": "Özel klavye kısayolları."
+  },
+  "subheader": "Alt başlık"
+}

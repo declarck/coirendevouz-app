@@ -56,6 +56,7 @@ export const paths = {
     jwt: {
       signIn: `${ROOTS.AUTH}/jwt/sign-in`,
       signUp: `${ROOTS.AUTH}/jwt/sign-up`,
+      businessSignUp: `${ROOTS.AUTH}/jwt/business-sign-up`,
     },
     firebase: {
       signIn: `${ROOTS.AUTH}/firebase/sign-in`,
@@ -171,6 +172,19 @@ export const paths = {
         details: `${ROOTS.DASHBOARD}/tour/${MOCK_ID}`,
         edit: `${ROOTS.DASHBOARD}/tour/${MOCK_ID}/edit`,
       },
+    },
+    /** İşletme paneli — Coirendevouz modülleri (B.2+) */
+    coirendevouz: {
+      overview: ROOTS.DASHBOARD,
+      services: `${ROOTS.DASHBOARD}/services`,
+      serviceNew: `${ROOTS.DASHBOARD}/services/new`,
+      serviceEdit: (id: number | string) => `${ROOTS.DASHBOARD}/services/${id}/edit`,
+      staff: `${ROOTS.DASHBOARD}/staff`,
+      staffNew: `${ROOTS.DASHBOARD}/staff/new`,
+      staffEdit: (id: number | string) => `${ROOTS.DASHBOARD}/staff/${id}/edit`,
+      schedule: `${ROOTS.DASHBOARD}/schedule`,
+      appointmentDetail: (id: number | string) => `${ROOTS.DASHBOARD}/appointments/${id}`,
+      manualAppointment: `${ROOTS.DASHBOARD}/appointments/manual`,
     },
   },
 };

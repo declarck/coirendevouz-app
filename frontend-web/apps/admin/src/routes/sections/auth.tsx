@@ -17,6 +17,7 @@ import { GuestGuard } from 'src/auth/guard';
 const Jwt = {
   SignInPage: lazy(() => import('src/pages/auth/jwt/sign-in')),
   SignUpPage: lazy(() => import('src/pages/auth/jwt/sign-up')),
+  BusinessSignUpPage: lazy(() => import('src/pages/auth/jwt/business-sign-up')),
 };
 
 const authJwt = {
@@ -42,6 +43,20 @@ const authJwt = {
         <GuestGuard>
           <AuthSplitLayout>
             <Jwt.SignUpPage />
+          </AuthSplitLayout>
+        </GuestGuard>
+      ),
+    },
+    {
+      path: 'business-sign-up',
+      element: (
+        <GuestGuard>
+          <AuthSplitLayout
+            slotProps={{
+              section: { title: 'İşletme paneli' },
+            }}
+          >
+            <Jwt.BusinessSignUpPage />
           </AuthSplitLayout>
         </GuestGuard>
       ),

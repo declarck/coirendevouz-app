@@ -7,6 +7,7 @@ Personel: None veya {} → işletme saatleri; dolu ise aynı şema (tam hafta).
 
 from __future__ import annotations
 
+import datetime as dt
 import re
 from typing import Any
 
@@ -24,6 +25,7 @@ WEEKDAYS: tuple[str, ...] = (
 )
 
 _HHMM = re.compile(r"^(?:[01]\d|2[0-3]):[0-5]\d$")
+_DATE_ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 def _hhmm_to_minutes(value: str) -> int:
@@ -160,6 +162,44 @@ def validate_staff_working_hours(data: Any) -> None:
     validate_working_hours(data, require_full_week=True)
 
 
+def validate_staff_working_hours_exceptions(data: Any) -> None:
+    """
+    Personel: izin / özel gün vb. için YYYY-MM-DD bazlı istisnalar (liste).
+    Boş veya None → doğrulama yok.
+    """
+    if data in (None, []):
+        return
+    if not isinstance(data, list):
+        raise ValidationError(_("İstisnalar bir liste olmalıdır."))
+
+    seen: set[str] = set()
+    for i, item in enumerate(data):
+        if not isinstance(item, dict):
+            raise ValidationError(_("İstisna[%(i)s] bir nesne olmalıdır.") % {"i": i})
+        date_v = item.get("date")
+        if not isinstance(date_v, str) or not _DATE_ISO.match(date_v):
+            raise ValidationError(
+                _("İstisna[%(i)s].date YYYY-MM-DD biçiminde olmalıdır.")
+                % {"i": i}
+            )
+        if date_v in seen:
+            raise ValidationError(
+                _("Aynı tarih iki kez tanımlanamaz: %(d)s") % {"d": date_v}
+            )
+        seen.add(date_v)
+        allowed = {"date", "closed", "open", "close", "breaks"}
+        extra = set(item.keys()) - allowed
+        if extra:
+            raise ValidationError(
+                _("İstisna[%(i)s]: bilinmeyen alanlar: %(fields)s")
+                % {"i": i, "fields": ", ".join(sorted(extra))}
+            )
+        if item.get("closed") is True:
+            continue
+        day_payload = {k: v for k, v in item.items() if k != "date"}
+        _validate_day(f"exception[{i}]", day_payload)
+
+
 def resolve_effective_working_hours(staff: Any) -> dict[str, Any]:
     """
     Personelde özel saat yoksa işletme saatlerini döndürür.
@@ -173,3 +213,34 @@ def resolve_effective_working_hours(staff: Any) -> dict[str, Any]:
     if raw is None or raw == {}:
         return dict(staff.business.working_hours or {})
     return dict(raw)
+
+
+def get_staff_day_config_for_date(staff: Any, day: dt.date) -> dict[str, Any] | None:
+    """
+    Belirli bir takvim günü için etkin gün yapılandırması.
+
+    Önce `working_hours_exceptions` içinde aynı tarih varsa o kullanılır;
+    yoksa haftalık şablondan (personel veya işletme) ilgili gün seçilir.
+    """
+    from business.models import Staff
+
+    if not isinstance(staff, Staff):
+        raise TypeError("Staff örneği gerekli.")
+
+    raw_exc = getattr(staff, "working_hours_exceptions", None)
+    if isinstance(raw_exc, list):
+        for item in raw_exc:
+            if not isinstance(item, dict):
+                continue
+            if item.get("date") != day.isoformat():
+                continue
+            if item.get("closed") is True:
+                return {"closed": True}
+            cfg = {k: v for k, v in item.items() if k != "date"}
+            if cfg.get("closed") is True:
+                return {"closed": True}
+            return cfg
+
+    hours = resolve_effective_working_hours(staff)
+    wkey = WEEKDAYS[day.weekday()]
+    return hours.get(wkey)

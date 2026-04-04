@@ -57,31 +57,31 @@ Aşağıdaki sıra **bilinçli**: önce işletme kapsamı ve API, sonra ekranlar
 
 | Sıra | Kod | İçerik | Bağımlılık |
 |------|-----|--------|------------|
-| A.1 | `2-BE-01` | **Yetki katmanı:** `business_admin` (ve istenirse `staff`) için DRF izinleri; işletme kaynaklarında `owner` / üyelik kontrolü. | — |
-| A.2 | `2-BE-02` | **İşletme kapsamı:** Yöneticinin işletme(ler)ine erişim — örn. `GET /api/v1/businesses/mine/` veya `users/me` içinde `owned_businesses` (sözleşmeye göre netleştirilir). | A.1 |
-| A.3 | `2-BE-03` | **Hizmet CRUD:** `GET/POST /api/v1/businesses/{id}/services/`, `GET/PATCH/DELETE .../services/{id}/` (soft delete: `is_active`). | A.2 |
-| A.4 | `2-BE-04` | **Personel CRUD:** `.../staff/` ile aynı desen. | A.2 |
-| A.5 | `2-BE-05` | **Personel–hizmet ataması:** `PUT .../staff/{staff_id}/services/` veya eşdeğeri (`service_ids`). | A.3, A.4 |
-| A.6 | `2-BE-06` | **Ajanda:** `GET .../businesses/{id}/schedule/?from=&to=` — randevu listesi + müşteri özeti. | A.2, randevu modeli (mevcut) |
-| A.7 | `2-BE-07` | **Manuel randevu:** `POST .../appointments/manual/` — `staff_id`, `service_id`, `starts_at`, `customer_user_id` (veya MVP misafir/müşteri stratejisi). | A.5, A.6 |
-| A.8 | `2-BE-08` | **Randevu güncelleme:** `PATCH /api/v1/appointments/{id}/` — durum (`completed`, `cancelled` vb.) işletme yetkisiyle. | A.1, A.6 |
-| A.9 | `2-BE-09` | **Profil:** `PATCH /api/v1/users/me/` (sözleşme §6) — ad, telefon. | Mevcut `GET` ile birlikte |
-| A.10 | `2-BE-10` | OpenAPI şeması, README tablosu ve gerekirse **API-CONTRACT** düzeltmesi. | A.1–A.9 |
+| A.1 | `2-BE-01` | **Yetki katmanı:** `business_admin` (ve istenirse `staff`) için DRF izinleri; işletme kaynaklarında `owner` / üyelik kontrolü. **Tamamlandı.** `api/permissions.py` — `user_has_business_access`, `IsBusinessPanelUser`, `IsBusinessMember`; test: `api.tests.test_business_permissions`. | — |
+| A.2 | `2-BE-02` | **İşletme kapsamı:** Yöneticinin işletme(ler)ine erişim — örn. `GET /api/v1/businesses/mine/` veya `users/me` içinde `owned_businesses` (sözleşmeye göre netleştirilir). **Tamamlandı.** `GET /businesses/mine/` — sahip + aktif personel; `IsBusinessPanelUser`; test: `api.tests.test_businesses_mine`. | A.1 |
+| A.3 | `2-BE-03` | **Hizmet CRUD:** `GET/POST /api/v1/businesses/{id}/services/`, `GET/PATCH/DELETE .../services/{id}/` (soft delete: `is_active`). **Tamamlandı.** `IsAuthenticated` + `IsBusinessMember`; `DELETE` → `is_active=False`; test: `api.tests.test_services_crud`. | A.2 |
+| A.4 | `2-BE-04` | **Personel CRUD:** `.../staff/` ile aynı desen. **Tamamlandı.** `GET/POST .../staff/`, `GET/PATCH/DELETE .../staff/{id}/`; `IsAuthenticated` + `IsBusinessMember`; `DELETE` soft; test: `api.tests.test_staff_crud`. | A.2 |
+| A.5 | `2-BE-05` | **Personel–hizmet ataması:** `PUT .../staff/{staff_id}/services/` veya eşdeğeri (`service_ids`). **Tamamlandı.** `PUT /businesses/{business_id}/staff/{staff_id}/services/`; `IsAuthenticated` + `IsBusinessMember`; test: `api.tests.test_staff_services_assignment`. | A.3, A.4 |
+| A.6 | `2-BE-06` | **Ajanda:** `GET .../businesses/{id}/schedule/?from=&to=` — randevu listesi + müşteri özeti. **Tamamlandı.** `from`/`to` zorunlu `YYYY-MM-DD` (Europe/Istanbul gün aralığı); isteğe bağlı `status`; test: `api.tests.test_schedule`. | A.2, randevu modeli (mevcut) |
+| A.7 | `2-BE-07` | **Manuel randevu:** `POST .../appointments/manual/` — `staff_id`, `service_id`, `starts_at`, `customer_user_id` (veya MVP misafir/müşteri stratejisi). **Tamamlandı.** `customer_user_id` yalnızca `customer` rolü; `source=business_manual`; test: `api.tests.test_manual_appointment`. | A.5, A.6 |
+| A.8 | `2-BE-08` | **Randevu güncelleme:** `PATCH /api/v1/appointments/{id}/` — durum (`completed`, `cancelled` vb.) işletme yetkisiyle. **Tamamlandı.** `IsBusinessMemberForAppointment`; `status` ve/veya `internal_note`; test: `api.tests.test_appointment_business_patch`. | A.1, A.6 |
+| A.9 | `2-BE-09` | **Profil:** `PATCH /api/v1/users/me/` (sözleşme §6) — ad, telefon. **Tamamlandı.** `UserMePatchSerializer`; yanıt `GET` ile aynı `{ "user": ... }`; test: `api.tests.test_users_me_patch`. | Mevcut `GET` ile birlikte |
+| A.10 | `2-BE-10` | OpenAPI şeması, README tablosu ve gerekirse **API-CONTRACT** düzeltmesi. **Tamamlandı.** `spectacular --validate --fail-on-warn` uyarısız; `UserMeSerializer.photoURL` şema uyarısı giderildi; README REST tablosu PUT + Faz 2 notu; API-CONTRACT §7 backend referansı. | A.1–A.9 |
 
 #### B — Frontend (`frontend-web/apps/admin`, Minimal)
 
 | Sıra | Kod | İçerik | Bağımlılık |
 |------|-----|--------|------------|
-| B.1 | `2-FE-01` | Ortak **API istemcisi** (axios instance, `Authorization`, **refresh token** yenileme, hata mesajları). | Mevcut JWT |
-| B.2 | `2-FE-02` | **Menü / sayfa iskeleti:** Coirendevouz modülleri (demo sayfaları gizlenir veya kaldırılır); ana rota grupları. | B.1 |
-| B.3 | `2-FE-03` | **İşletme bağlamı:** Oturumdan işletme seçimi veya tek işletme; route guard. | A.2, B.1 |
-| B.4 | `2-FE-04` | **Hizmetler** ekranı: liste + oluştur/düzenle. | A.3, B.3 |
-| B.5 | `2-FE-05` | **Personel** ekranı: liste + oluştur/düzenle + hizmet ataması. | A.4, A.5, B.3 |
-| B.6 | `2-FE-06` | **Ajanda** ekranı: gün/hafta liste veya takvim widget’ı. | A.6, B.3 |
-| B.7 | `2-FE-07` | **Manuel randevu** sihirbazı veya form. | A.7, B.5 |
-| B.8 | `2-FE-08` | **Randevu detay / durum** (tamamlandı, iptal). | A.8, B.6 |
-| B.9 | `2-FE-09` | **Kayıt / davet** (işletme yöneticisi) — MVP kapsamı netliği. | A.1, 2.2 |
-| B.10 | `2-FE-10` | Smoke test dokümanı veya Playwright/Cypress iskeleti (isteğe bağlı). | B.4–B.8 |
+| B.1 | `2-FE-01` | Ortak **API istemcisi** (axios instance, `Authorization`, **refresh token** yenileme, hata mesajları). **Tamamlandı.** `apps/admin/src/lib/axios.ts` (interceptors), `auth-session.ts`, `api-errors.ts`; `setSession` refresh; giriş `access`+`refresh` saklar. | Mevcut JWT |
+| B.2 | `2-FE-02` | **Menü / sayfa iskeleti:** Coirendevouz modülleri (demo sayfaları gizlenir veya kaldırılır); ana rota grupları. **Tamamlandı.** `apps/admin` — `paths.dashboard.coirendevouz.*`, panel menüsü (`nav-config-dashboard`), demo dashboard/main rotaları kaldırıldı; placeholder sayfalar (`pages/dashboard/coirendevouz/`). | B.1 |
+| B.3 | `2-FE-03` | **İşletme bağlamı:** Oturumdan işletme seçimi veya tek işletme; route guard. **Tamamlandı.** `GET /businesses/mine/` → `BusinessProvider` + `BusinessAccessGuard` (403 / boş liste / ağ); `sessionStorage` ile seçili işletme; çoklu işletmede `BusinessWorkspacePopover`; `endpoints.business.mine`. | A.2, B.1 |
+| B.4 | `2-FE-04` | **Hizmetler** ekranı: liste + oluştur/düzenle. **Tamamlandı.** `GET/POST/PATCH/DELETE .../businesses/{id}/services/` — tablo, formlar (`sections/services/`), rotalar `/dashboard/services`, `/new`, `/:id/edit`; pasifleştirme (DELETE); çok sayfalı liste birleştirilir (`fetchAllServices`). | A.3, B.3 |
+| B.5 | `2-FE-05` | **Personel** ekranı: liste + oluştur/düzenle + hizmet ataması. **Tamamlandı.** `GET/POST/PATCH/DELETE .../staff/`, `PUT .../staff/{id}/services/` (`service_ids`); rotalar `/dashboard/staff`, `/new`, `/:id/edit`; `StaffServicesAssignment` (aktif hizmet checkbox); opsiyonel `user` (PK). | A.4, A.5, B.3 |
+| B.6 | `2-FE-06` | **Ajanda** ekranı: gün/hafta liste veya takvim widget’ı. **Tamamlandı.** `GET .../schedule/?from=&to=` (İstanbul günü), gün/hafta gezgini, durum filtresi, tablo; `src/lib/istanbul-date.ts`, `api/business-schedule.ts`, `sections/schedule/schedule-view.tsx`. | A.6, B.3 |
+| B.7 | `2-FE-07` | **Manuel randevu** sihirbazı veya form. **Tamamlandı.** `POST .../businesses/{id}/appointments/manual/`, `GET .../appointments/available-slots/`; `sections/manual-appointment/manual-appointment-view.tsx`, `api/manual-appointment.ts`, `api/available-slots.ts`; `/dashboard/appointments/manual`. | A.7, B.5 |
+| B.8 | `2-FE-08` | **Randevu detay / durum** (tamamlandı, iptal). **Tamamlandı.** `GET`/`PATCH /appointments/{id}/`; `sections/appointment-detail/appointment-detail-view.tsx`, `api/appointment-business.ts`; ajanda satırı → detay; `/dashboard/appointments/:id`. | A.8, B.6 |
+| B.9 | `2-FE-09` | **Kayıt / davet** (işletme yöneticisi) — MVP kapsamı netliği. **Tamamlandı.** `POST /auth/register/` + `role: business_admin`; `registerAccount` → token ile giriş; **`/auth/jwt/business-sign-up`**; MVP bilgi metni (işletme kaydı ayrı; davet yok); müşteri kaydı `signUp` Django gövdesiyle hizalandı. | A.1, 2.2 |
+| B.10 | `2-FE-10` | Smoke test dokümanı veya Playwright/Cypress iskeleti (isteğe bağlı). **Tamamlandı.** [`documentation/SMOKE-TEST-ADMIN-PANEL.md`](./SMOKE-TEST-ADMIN-PANEL.md); `apps/admin/playwright.config.ts`, `e2e/smoke.spec.ts`; `npm run test:e2e`. | B.4–B.8 |
 
 #### C — Müşteri sitesi (`frontend-web/apps/site`, Zone)
 
