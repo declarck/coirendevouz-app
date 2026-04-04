@@ -27,7 +27,7 @@ Bu belge, **Coirendevouz** için fazlara ayrılmış teslimat sırasını tanım
 | 1.2 | Kullanıcı modeli ve roller (müşteri, işletme yöneticisi, istenirse personel) | **Tamamlandı.** `users.User` — e-posta girişi, `Role`, admin; ayrıntı [`backend/README.md`](../backend/README.md). |
 | 1.3 | İşletme, hizmet, personel, personel–hizmet ilişkisi modelleri | **Tamamlandı.** `business` uygulaması: `Business`, `Service`, `Staff`, `StaffService` (M2M `through`). |
 | 1.4 | Randevu modeli ve çakışma kontrolü | **Tamamlandı.** `appointments.Appointment` — `clean` ile kesişim; `save` içinde `transaction.atomic` + `select_for_update` (personel kilidi). |
-| 1.5 | Çalışma saatleri (işletme / personel) MVP temsil'i | JSON veya tablo; dokümante edilmiş şema. |
+| 1.5 | Çalışma saatleri (işletme / personel) MVP temsil'i | **Tamamlandı.** `business/working_hours.py` — §4 şema doğrulaması; `Staff.get_effective_working_hours()`. |
 | 1.6 | DRF ile CRUD + **müsait slot** hesaplama endpoint’i | En kritik iş mantığı. |
 | 1.7 | OpenAPI / Swagger | Frontend ve test için. |
 

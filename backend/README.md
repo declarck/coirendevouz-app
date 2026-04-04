@@ -6,6 +6,7 @@ Django tabanlı API projesi.
 - **Faz 1.2:** özel kullanıcı modeli (`users.User`), e-posta ile giriş, roller (`customer`, `business_admin`, `staff`), Django admin entegrasyonu.
 - **Faz 1.3:** işletme, hizmet, personel, personel–hizmet (`business` uygulaması); admin’de yönetilebilir.
 - **Faz 1.4:** randevu modeli (`appointments`), iptal dışı çakışma kontrolü, kayıtta personel satır kilidi.
+- **Faz 1.5:** çalışma saatleri JSON şeması (`DATA-MODEL.md` §4) — `validate_business_working_hours` / `validate_staff_working_hours`, etkin saatler için `resolve_effective_working_hours` / `Staff.get_effective_working_hours()`.
 
 ## Önkoşullar
 

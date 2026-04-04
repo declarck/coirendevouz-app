@@ -68,6 +68,12 @@ class Business(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def clean(self):
+        super().clean()
+        from .working_hours import validate_business_working_hours
+
+        validate_business_working_hours(self.working_hours)
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base = slugify(self.name)[:200] or "isletme"
@@ -159,6 +165,17 @@ class Staff(models.Model):
 
     def __str__(self) -> str:
         return f"{self.display_name} ({self.business.name})"
+
+    def clean(self):
+        super().clean()
+        from .working_hours import validate_staff_working_hours
+
+        validate_staff_working_hours(self.working_hours)
+
+    def get_effective_working_hours(self) -> dict:
+        from .working_hours import resolve_effective_working_hours
+
+        return resolve_effective_working_hours(self)
 
 
 class StaffService(models.Model):
